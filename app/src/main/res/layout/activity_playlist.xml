@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PlaylistActivity"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal">
+        <Button
+            android:id="@+id/playPause"
+            android:layout_width="180dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/play_button"
+            android:textAllCaps="false"
+            android:textColor="#FD1D43"
+            android:text="Play"
+            android:textStyle="bold"
+            android:fontFamily="serif"
+            android:textSize="24sp"/>
+        <Button
+            android:id="@+id/shuffle"
+            android:layout_width="180dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/play_button"
+            android:textAllCaps="false"
+            android:textColor="#FD1D43"
+            android:text="Shuffle"
+            android:textStyle="bold"
+            android:fontFamily="serif"
+            android:textSize="24sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal">
+
+    <ImageButton
+        android:id="@+id/prev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_baseline_skip_previous_24"
+        android:background="#FAFAFA"/>
+    <ImageButton
+        android:id="@+id/next"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_baseline_skip_next_24"
+        android:background="#FAFAFA"/>
+    </LinearLayout>
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent" />
+
+
+</LinearLayout>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#ffff">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:src="@drawable/applemusic" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Abble Music"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="28sp"
+        android:textColor="#000000"
+        android:fontFamily="serif"/>
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="370dp"
+        android:layout_height="36dp"
+        android:ems="10"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:inputType="textEmailAddress"
+        android:hint="Email"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/edittext"/>
+
+    <EditText
+        android:id="@+id/etPass"
+        android:layout_width="370dp"
+        android:layout_height="36dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="Password"
+        android:gravity="center"
+        android:background="@drawable/edittext"/>
+
+    <CheckBox
+        android:id="@+id/save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Information"
+        android:layout_marginLeft="10dp"/>
+
+    <Button
+        android:id="@+id/signin"
+        android:layout_width="370dp"
+        android:layout_height="wrap_content"
+        android:text="Sign In"
+        android:textColor="#ffff"
+        android:textSize="18sp"
+        android:background="@drawable/signin_button"/>
+
+    <TextView
+        android:id="@+id/tvSignin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/don_t_have_an_account_sign_up"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="15dp"
+        android:textSize="18sp"
+        android:onClick="createAccountD"/>
+
+</LinearLayout>
