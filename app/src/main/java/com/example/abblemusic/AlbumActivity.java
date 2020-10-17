@@ -182,7 +182,8 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
     public void onCompletion(MediaPlayer mp) {
         if (index<songs.size()-1) {
             Song song = songs.get(index + 1);
-            player = MediaPlayer.create(this, song.getId());
+            mp = MediaPlayer.create(this, song.getId());
+            player = mp;
             index++;
             playing = song;
             player.start();
