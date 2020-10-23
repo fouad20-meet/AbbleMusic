@@ -23,11 +23,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private EditText siEmail,siPass,suEmail,suPass,name;
     private Button signin,signup;
     private SharedPreferences sp;
-    private Dialog d;
+    private Dialog d,confirm;
     private TextView createAccount;
     private CheckBox save;
     private CircleImageView imageView;
     private User user;
+    private String code;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,9 +78,22 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 if(suEmail.getText().toString().contains("@") && suEmail.getText().toString().contains(".com")) {
                     siEmail.setText(suEmail.getText());
                     siPass.setText(suPass.getText());
+                    code = "";
+                    for (int i = 0; i<6; i++){
+                        int rnd = (int)(Math.random()*10);
+                        code += rnd;
+                    }
+                    d.dismiss();
+                    String email = suEmail.getText().toString().trim();
+                    String subject = "Please Confirm Your Email - Abble Music";
+                    String message = code;
+                    //Creating SendMail object
+                    SendMail sm = new SendMail(this, email, subject, message);
+                    //Executing sendmail to send email
+                    sm.execute();
+                    //Intent
                     //user = new User(name.getText().toString(),suEmail.getText().toString(),suPass.getText().toString());
                     //Log.d("user",user.toString());
-                    d.dismiss();
                 }
                 else
                     Toast.makeText(this,"Not A Valid Email!",Toast.LENGTH_LONG).show();

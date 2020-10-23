@@ -72,7 +72,7 @@
         android:id="@+id/signup"
         android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="Next"
         android:textSize="18sp"
         android:background="@drawable/signin_button"
         android:textColor="#ffff"
