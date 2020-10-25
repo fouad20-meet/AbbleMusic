@@ -8,11 +8,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="1dp"
+        android:padding="5dp"
         android:orientation="vertical">
         <androidx.cardview.widget.CardView
-            android:layout_width="170dp"
-            android:layout_height="170dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:layout_marginTop="15dp"
             app:cardCornerRadius="5dp"
             app:cardElevation="0dp"
@@ -20,8 +20,8 @@
 
             <ImageView
                 android:id="@+id/album_img"
-                android:layout_width="170dp"
-                android:layout_height="170dp"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_gravity="center_horizontal"
                 android:scaleType="fitXY" />
         </androidx.cardview.widget.CardView>

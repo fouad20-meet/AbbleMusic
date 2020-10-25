@@ -49,10 +49,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal">
         <Button
             android:id="@+id/playpause"
-            android:layout_width="175dp"
+            android:layout_width="150dp"
             android:layout_height="60dp"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="15dp"
@@ -63,19 +64,21 @@
             android:textStyle="bold"
             android:fontFamily="serif"
             android:textSize="24sp"/>
+
         <Button
             android:id="@+id/shufflealbum"
-            android:layout_width="175dp"
+            android:layout_width="150dp"
             android:layout_height="60dp"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="15dp"
+            android:layout_marginRight="20dp"
             android:background="@drawable/play_button"
+            android:fontFamily="serif"
+            android:text="Shuffle"
             android:textAllCaps="false"
             android:textColor="#FD1D43"
-            android:text="Shuffle"
-            android:textStyle="bold"
-            android:fontFamily="serif"
-            android:textSize="24sp"/>
+            android:textSize="24sp"
+            android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

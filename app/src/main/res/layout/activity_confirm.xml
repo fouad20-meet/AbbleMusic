@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="370dp"
-    android:layout_height="150dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_gravity="center"
     android:gravity="center">
@@ -12,15 +12,18 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="A Code Has Been Sent to "
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/roboto"
         android:gravity="center"
+        android:text="A Code Has Been Sent to: "
         android:textColor="@color/black"
-        android:textSize="17sp"
-        android:layout_marginBottom="10dp"/>
+        android:textSize="25sp" />
 
     <EditText
-        android:id="@+id/name"
-        android:layout_width="330dp"
+        android:id="@+id/code"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_height="36dp"
         android:ems="10"
         android:hint="Code from Email"
@@ -32,10 +35,22 @@
         android:layout_marginBottom="10dp"/>
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="330dp"
+        android:id="@+id/confirm"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="Sign up"
         android:background="@drawable/signin_button"
         android:textColor="#ffff"/>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Didn't Receive Code? Send Again."
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:onClick="sendAgain"/>
 </LinearLayout>

@@ -76,8 +76,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 Toast.makeText(this,"Error! Empty Fields...",Toast.LENGTH_LONG).show();
             else{
                 if(suEmail.getText().toString().contains("@") && suEmail.getText().toString().contains(".com")) {
-                    siEmail.setText(suEmail.getText());
-                    siPass.setText(suPass.getText());
                     code = "";
                     for (int i = 0; i<6; i++){
                         int rnd = (int)(Math.random()*10);
@@ -91,7 +89,10 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     SendMail sm = new SendMail(this, email, subject, message);
                     //Executing sendmail to send email
                     sm.execute();
-                    //Intent
+                    Intent intent = new Intent(this,ConfirmActivity.class);
+                    intent.putExtra("email",suEmail.getText().toString());
+                    intent.putExtra("code",code);
+                    startActivity(intent);
                     //user = new User(name.getText().toString(),suEmail.getText().toString(),suPass.getText().toString());
                     //Log.d("user",user.toString());
                 }

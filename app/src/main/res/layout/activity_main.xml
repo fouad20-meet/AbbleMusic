@@ -37,7 +37,9 @@
 
     <Button
         android:id="@+id/playlist"
-        android:layout_width="360dp"
+        android:layout_width="match_parent"
+        android:layout_marginRight="25dp"
+        android:layout_marginLeft="25dp"
         android:layout_height="wrap_content"
         android:text="Playlist"
         android:background="@drawable/signin_button"
