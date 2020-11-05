@@ -7,7 +7,6 @@
     tools:context=".AlbumActivity"
     android:orientation="vertical"
     android:gravity="center_horizontal">
-
     <androidx.cardview.widget.CardView
         android:layout_width="230dp"
         android:layout_height="230dp"
@@ -53,7 +52,8 @@
         android:gravity="center_horizontal">
         <Button
             android:id="@+id/playpause"
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
             android:layout_height="60dp"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="15dp"
@@ -66,8 +66,9 @@
             android:textSize="24sp"/>
 
         <Button
+            android:layout_weight="1"
             android:id="@+id/shufflealbum"
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginLeft="17dp"
             android:layout_marginTop="15dp"
@@ -80,30 +81,17 @@
             android:textSize="24sp"
             android:textStyle="bold" />
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal">
-
-        <ImageButton
-            android:id="@+id/prevalbum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#FAFAFA"
-            app:srcCompat="@drawable/ic_baseline_skip_previous_24" />
-        <ImageButton
-            android:id="@+id/nextalbum"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_baseline_skip_next_24"
-            android:background="#FAFAFA"/>
-    </LinearLayout>
     <ListView
         android:id="@+id/listViewsongs"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="2.5">
     </ListView>
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.example.abblemusic.PlayingFragment"
+        android:id="@+id/TODO"
+        android:layout_weight="3.2"/>
 
 </LinearLayout>

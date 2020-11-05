@@ -40,6 +40,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
     private Album album;
     private int index;
     private ImageButton prev,next;
+    private PlayingFragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +76,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
         prev.setOnClickListener(this);
         next = findViewById(R.id.nextalbum);
         next.setOnClickListener(this);
+        fragment = (PlayingFragment) getSupportFragmentManager().findFragmentById(R.id.TODO);
     }
 
     private void setUpImageLoader(){
@@ -100,6 +102,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             stopPlayer(playing);
         }
         playing = song;
+        fragment.setSong(playing.getImage(),playing.getName());
         player = MediaPlayer.create(this,song.getId());
         player.setOnCompletionListener(this);
         index = position;
@@ -135,6 +138,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
                 player.start();
                 playPause.setText("Pause");
                 playing = songs.get(0);
+                fragment.setSong(playing.getImage(),playing.getName());
             } else if (playing != null && player.isPlaying()) {
                 player.pause();
                 playPause.setText("Play");
@@ -151,6 +155,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
                 player = MediaPlayer.create(this,song.getId());
                 index--;
                 playing = song;
+                fragment.setSong(playing.getImage(),playing.getName());
                 player.start();
             }
         }
@@ -162,6 +167,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
                 player = MediaPlayer.create(this,song.getId());
                 index++;
                 playing = song;
+                fragment.setSong(playing.getImage(),playing.getName());
                 player.start();
             }
         }
@@ -174,6 +180,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             player.start();
             index = order;
             playing = songs.get(order);
+            fragment.setSong(playing.getImage(),playing.getName());
             playPause.setText("Pause");
         }
     }
@@ -186,6 +193,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             player = mp;
             index++;
             playing = song;
+            fragment.setSong(playing.getImage(),playing.getName());
             player.start();
         }
         else {
@@ -193,6 +201,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             player = MediaPlayer.create(this, song.getId());
             index=0;
             playing = song;
+            fragment.setSong(playing.getImage(),playing.getName());
             player.start();
         }
     }
