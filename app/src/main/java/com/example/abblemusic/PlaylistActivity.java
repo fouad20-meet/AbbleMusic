@@ -19,10 +19,12 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class PlaylistActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, View.OnClickListener, MediaPlayer.OnCompletionListener {
+public class PlaylistActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, View.OnClickListener, MediaPlayer.OnCompletionListener,PlayingFragment.PlayingFragmentListener {
     private ListView listView;//display
     private ArrayList<Song> songs;//DATA
     private ArrayAdapter<Song> arrayAdapter;//Adapter
@@ -31,6 +33,7 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
     private Button playPause,shuffle;
     private int index;
     private PlayingFragment fragment;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
         playPause.setOnClickListener(this);
         shuffle = findViewById(R.id.shuffle);
         shuffle.setOnClickListener(this);
+        mAuth = FirebaseAuth.getInstance();
         fragment = (PlayingFragment) getSupportFragmentManager().findFragmentById(R.id.frPlaying);
     }
 
@@ -71,6 +75,7 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
         player.setOnCompletionListener(this);
         player.start();
         playPause.setText("Pause");
+        fragment.changeIcon(true);
     }
 
     @Override
@@ -88,6 +93,8 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
             playing = null;
             player = null;
             playPause.setText("Play");
+            fragment.changeIcon(false);
+            fragment.setSong("@drawable/nosong","Not Playing");
         }
     }
 
@@ -100,16 +107,19 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
                 player.setOnCompletionListener(this);
                 player.start();
                 playPause.setText("Pause");
+                fragment.changeIcon(true);
                 playing = songs.get(0);
                 fragment.setSong(playing.getImage(),playing.getName());
             }
             else if (player!=null && player.isPlaying()) {
                 player.pause();
                 playPause.setText("Play");
+                fragment.changeIcon(false);
             }
             else {
                 player.start();
                 playPause.setText("Pause");
+                fragment.changeIcon(true);
             }
         }
         else if (v==shuffle){
@@ -124,6 +134,7 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
             playing = songs.get(order);
             fragment.setSong(playing.getImage(),playing.getName());
             playPause.setText("Pause");
+            fragment.changeIcon(true);
         }
     }
     @Override
@@ -143,6 +154,7 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
         else if (id == R.id.signout){
             Intent intent = new Intent(this,SignInActivity.class);
             stopPlayer(playing);
+            mAuth.signOut();
             startActivity(intent);
             finish();
         }
@@ -177,14 +189,19 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
 
     public void next(){
         if (index<songs.size()){
+            if (playing!=null)
+                stopPlayer(playing);
             index++;
             Song song = songs.get(index);
             player = MediaPlayer.create(this, song.getId());
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            player.start();
         }
         else {
+            if (playing!=null)
+                stopPlayer(playing);
             Song song = songs.get(0);
             player = MediaPlayer.create(this, song.getId());
             index=0;
@@ -196,53 +213,47 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
 
     public void prev(){
         if (index>0){
+            if (playing!=null)
+                stopPlayer(playing);
             index--;
             Song song = songs.get(index);
             player = MediaPlayer.create(this, song.getId());
             playing = song;
-            fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            fragment.setSong(playing.getImage(),playing.getName());
         }
         else {
+            if (playing!=null)
+                stopPlayer(playing);
             Song song = songs.get(songs.size()-1);
             player = MediaPlayer.create(this, song.getId());
             index=songs.size()-1;
             playing = song;
-            fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            fragment.setSong(playing.getImage(),playing.getName());
         }
     }
 
     public void playPause(){
-        if (player.isPlaying()){
-
+        if (playing==null) {
+            player = MediaPlayer.create(this, songs.get(0).getId());
+            index = 0;
+            player.setOnCompletionListener(this);
+            player.start();
+            playPause.setText("Pause");
+            fragment.changeIcon(true);
+            playing = songs.get(0);
+            fragment.setSong(playing.getImage(),playing.getName());
         }
-    }
-
-    public static void setListViewHeightBasedOnChildren
-            (ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) return;
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
-                View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0) view.setLayoutParams(new
-                    ViewGroup.LayoutParams(desiredWidth,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
+        if (player!= null && player.isPlaying()){
+            player.pause();
+            playPause.setText("Play");
+            fragment.changeIcon(false);
         }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-
-        params.height = totalHeight + (listView.getDividerHeight() *
-                (listAdapter.getCount()-1));
-
-        listView.setLayoutParams(params);
-        listView.requestLayout();
+        else {
+            player.start();
+            playPause.setText("Pause");
+            fragment.changeIcon(true);
+        }
     }
 }

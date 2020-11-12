@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -28,6 +30,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private EditText name, email, pass;
     private Button back, update;
     private Bitmap bitmap;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         //pass.setText(user.getPass());
         back = findViewById(R.id.back);
         update = findViewById(R.id.update);
+        mAuth = FirebaseAuth.getInstance();
         back.setOnClickListener(this);
         update.setOnClickListener(this);
 //        if (user.getImage()!=null)
@@ -82,6 +86,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         }
         else if (id == R.id.signout){
             Intent intent = new Intent(this,SignInActivity.class);
+            mAuth.signOut();
             startActivity(intent);
             finish();
         }

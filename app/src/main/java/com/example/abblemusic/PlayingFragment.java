@@ -22,6 +22,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import static com.example.abblemusic.R.drawable.ic_baseline_pause_24;
+import static com.example.abblemusic.R.drawable.ic_baseline_play_arrow_24;
 
 
 public class PlayingFragment extends Fragment {
@@ -39,6 +40,7 @@ public class PlayingFragment extends Fragment {
     public interface PlayingFragmentListener{
         public void next();
         public void prev();
+        public void playPause();
     }
 
     //this is called whenever the fragment is attached to an activity
@@ -59,7 +61,6 @@ public class PlayingFragment extends Fragment {
         songname = view.findViewById(R.id.songname);
         prev = view.findViewById(R.id.prevalbum);
         prev.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View v) {
                 activityControl.prev();
@@ -70,6 +71,13 @@ public class PlayingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 activityControl.next();
+            }
+        });
+        play = view.findViewById(R.id.playPausealbum);
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityControl.playPause();
             }
         });
         return view;
@@ -87,11 +95,12 @@ public class PlayingFragment extends Fragment {
         songname.setText(name);
     }
 
-//    public void changeIcon(Boolean check){
-//        if (check) {
-//            //play.setImageDrawable();
-//        }
-//    }
+    public void changeIcon(Boolean check){
+        if (check)
+            play.setImageResource(ic_baseline_pause_24);
+        else
+            play.setImageResource(ic_baseline_play_arrow_24);
+    }
 
     private void setUpImageLoader(){
         // UNIVERSAL IMAGE LOADER SETUP

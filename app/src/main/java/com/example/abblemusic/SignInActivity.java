@@ -91,6 +91,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                     sm.execute();
                     Intent intent = new Intent(this,ConfirmActivity.class);
                     intent.putExtra("email",suEmail.getText().toString());
+                    intent.putExtra("pass",suPass.getText().toString());
                     intent.putExtra("code",code);
                     startActivity(intent);
                     //user = new User(name.getText().toString(),suEmail.getText().toString(),suPass.getText().toString());

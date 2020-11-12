@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -28,7 +29,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class AlbumActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, View.OnClickListener, MediaPlayer.OnCompletionListener {
+public class AlbumActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, View.OnClickListener, MediaPlayer.OnCompletionListener,PlayingFragment.PlayingFragmentListener {
     private ImageView cover;
     private TextView name,artist;
     private ListView listView;//display
@@ -41,6 +42,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
     private int index;
     private ImageButton prev,next;
     private PlayingFragment fragment;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +78,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
         prev.setOnClickListener(this);
         next = findViewById(R.id.nextalbum);
         next.setOnClickListener(this);
+        mAuth = FirebaseAuth.getInstance();
         fragment = (PlayingFragment) getSupportFragmentManager().findFragmentById(R.id.TODO);
     }
 
@@ -108,6 +111,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
         index = position;
         player.start();
         playPause.setText("Pause");
+        fragment.changeIcon(true);
     }
 
     @Override
@@ -125,6 +129,8 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             player = null;
             playing = null;
             playPause.setText("Play");
+            fragment.changeIcon(false);
+            fragment.setSong("@drawable/nosong","Not Playing");
         }
     }
 
@@ -137,40 +143,20 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
                 index = 0;
                 player.start();
                 playPause.setText("Pause");
+                fragment.changeIcon(true);
                 playing = songs.get(0);
                 fragment.setSong(playing.getImage(),playing.getName());
             } else if (playing != null && player.isPlaying()) {
                 player.pause();
                 playPause.setText("Play");
+                fragment.changeIcon(false);
             } else {
                 player.start();
                 playPause.setText("Pause");
+                fragment.changeIcon(true);
             }
         }
-        else if (v==prev){
-            if (index>0){
-                stopPlayer(playing);
-                playPause.setText("Pause");
-                Song song = songs.get(index-1);
-                player = MediaPlayer.create(this,song.getId());
-                index--;
-                playing = song;
-                fragment.setSong(playing.getImage(),playing.getName());
-                player.start();
-            }
-        }
-        else if (v==next){
-            if (index<songs.size()-1){
-                stopPlayer(playing);
-                playPause.setText("Pause");
-                Song song = songs.get(index+1);
-                player = MediaPlayer.create(this,song.getId());
-                index++;
-                playing = song;
-                fragment.setSong(playing.getImage(),playing.getName());
-                player.start();
-            }
-        }
+
         else if (v==shuffle){
             int length = songs.size();
             int order = (int) ((int)length*(Math.random()));
@@ -182,6 +168,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             playing = songs.get(order);
             fragment.setSong(playing.getImage(),playing.getName());
             playPause.setText("Pause");
+            fragment.changeIcon(true);
         }
     }
 
@@ -223,6 +210,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
         else if (id == R.id.signout){
             Intent intent = new Intent(this,SignInActivity.class);
             stopPlayer(playing);
+            mAuth.signOut();
             startActivity(intent);
             finish();
         }
@@ -233,9 +221,77 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
         }
         return true;
     }
+    public void next(){
+        if (index<songs.size()){
+            if (playing!=null)
+                stopPlayer(playing);
+            index++;
+            Song song = songs.get(index);
+            player = MediaPlayer.create(this, song.getId());
+            playing = song;
+            fragment.setSong(playing.getImage(),playing.getName());
+            player.start();
+        }
+        else {
+            if (playing!=null)
+                stopPlayer(playing);
+            Song song = songs.get(0);
+            player = MediaPlayer.create(this, song.getId());
+            index=0;
+            playing = song;
+            fragment.setSong(playing.getImage(),playing.getName());
+            player.start();
+        }
+    }
 
+    public void prev(){
+        if (index>0){
+            if (playing!=null)
+                stopPlayer(playing);
+            index--;
+            Song song = songs.get(index);
+            player = MediaPlayer.create(this, song.getId());
+            playing = song;
+            fragment.setSong(playing.getImage(),playing.getName());
+            player.start();
+        }
+        else {
+            if (playing!=null)
+                stopPlayer(playing);
+            Song song = songs.get(songs.size()-1);
+            player = MediaPlayer.create(this, song.getId());
+            index=songs.size()-1;
+            playing = song;
+            fragment.setSong(playing.getImage(),playing.getName());
+            player.start();
+        }
+    }
+
+    public void playPause(){
+        if (playing==null) {
+            player = MediaPlayer.create(this, songs.get(0).getId());
+            index = 0;
+            player.setOnCompletionListener(this);
+            player.start();
+            playPause.setText("Pause");
+            fragment.changeIcon(true);
+            playing = songs.get(0);
+            fragment.setSong(playing.getImage(),playing.getName());
+        }
+        if (player!= null && player.isPlaying()){
+            player.pause();
+            playPause.setText("Play");
+            fragment.changeIcon(false);
+        }
+        else {
+            player.start();
+            playPause.setText("Pause");
+            fragment.changeIcon(true);
+        }
+    }
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
 }

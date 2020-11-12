@@ -18,12 +18,13 @@
             android:layout_gravity="center"
             android:layout_marginBottom="15dp"
             android:layout_marginLeft="15dp">
+
             <ImageView
                 android:id="@+id/albumphoto"
                 android:layout_width="65dp"
+                android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:layout_height="65dp"
-                tools:srcCompat="@tools:sample/avatars"/>
+                android:src="@drawable/nosong"/>
         </androidx.cardview.widget.CardView>
         <TextView
             android:id="@+id/songname"

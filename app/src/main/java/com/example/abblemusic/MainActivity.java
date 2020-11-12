@@ -17,6 +17,8 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<Album> albums;//DATA
     private ArrayAdapter<Album> arrayAdapter;//Adapter
     private MediaPlayer player;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Collections.sort(albums);
         arrayAdapter = new AlbumArrayAdapter(this,R.layout.custom_grid, albums);
         gridView.setAdapter(arrayAdapter);
+        mAuth = FirebaseAuth.getInstance();
         //user = (User)intent.getSerializableExtra("user");
         //Log.d("user",user.toString());
     }
@@ -180,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (id == R.id.signout){
             Intent intent = new Intent(this,SignInActivity.class);
+            mAuth.signOut();
             startActivity(intent);
             finish();
         }
