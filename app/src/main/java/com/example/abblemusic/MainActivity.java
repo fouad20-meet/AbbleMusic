@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayAdapter<Album> arrayAdapter;//Adapter
     private MediaPlayer player;
     private FirebaseAuth mAuth;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference postRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +41,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = getIntent();
         playlist = findViewById(R.id.playlist);
         playlist.setOnClickListener(this);
+        firebaseDatabase=FirebaseDatabase.getInstance();
         gridView = findViewById(R.id.simpleGridView);
         gridView.setOnItemClickListener(this);
         albums = new ArrayList<Album>();
-        Album a1 = new Album("The Score","Fugees",true,"@drawable/fugees");
+        postRef=firebaseDatabase.getReference("Albums").push();
+        Album a1 = new Album("","The Score","Fugees",true,"@drawable/fugees");
         a1.addSong("Red Intro",R.raw.fugeesintro);
         a1.addSong("How Many Mics",R.raw.fugeesmics);
         a1.addSong("Ready or Not",R.raw.fugeesready);
@@ -54,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         a1.addSong("Cowboys",R.raw.fugeescowboys);
         a1.addSong("No Woman, No Cry",R.raw.fugeeswoman);
         a1.addSong("Manifest/Outro",R.raw.fugeesmanifest);
-        Album a2 = new Album("The Dark Side of the Moon","Pink Floyd",false,"@drawable/pinkfloyd");
+        Album a2 = new Album("","The Dark Side of the Moon","Pink Floyd",false,"@drawable/pinkfloyd");
         a2.addSong("Speak to Me",R.raw.pinkspeak);
         a2.addSong("Breathe (In the Air)",R.raw.pinkbreathe);
         a2.addSong("On the Run",R.raw.pinkrun);
@@ -65,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         a2.addSong("Any Colour You Like",R.raw.pinkcolour);
         a2.addSong("Brain Damage",R.raw.pinkdamage);
         a2.addSong("Eclipse",R.raw.pinkeclipse);
-        Album a3 = new Album("Greatest Hits","Janis Joplin",false,"@drawable/janis");
+
+        Album a3 = new Album("","Greatest Hits","Janis Joplin",false,"@drawable/janis");
         a3.addSong("Piece of My Heart",R.raw.janisheart);
         a3.addSong("Summertime",R.raw.janissummertime);
         a3.addSong("Try (Just a Little Bit Harder)",R.raw.janistry);
@@ -78,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         a3.addSong("Ball and Chain",R.raw.janisball);
         a3.addSong("Maybe",R.raw.janismaybe);
         a3.addSong("Mercedes Benz",R.raw.janismercedes);
-        Album a4 = new Album("MTV Unplugged In New York (Live)","Nirvana",false,"@drawable/nirvana");
+
+        Album a4 = new Album("","MTV Unplugged In New York (Live)","Nirvana",false,"@drawable/nirvana");
         a4.addSong("About a Girl",R.raw.nirvanaaboutgirl);
         a4.addSong("Come As You Are",R.raw.nirnanacome);
         a4.addSong("Jesus Doesn't Want Me For A Sunbeam",R.raw.nirvanajesus);
@@ -93,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         a4.addSong("Lake of Fire",R.raw.nirvanafire);
         a4.addSong("All Apologies",R.raw.nirvanaapologies);
         a4.addSong("Where Did You Sleep Last Night",R.raw.nirvanasleep);
-        Album a5 = new Album("Abbey Road","Beatles",true,"@drawable/beatles");
+
+        Album a5 = new Album("","Abbey Road","Beatles",true,"@drawable/beatles");
         a5.addSong("Come Together",R.raw.beatlestogether);
         a5.addSong("Something",R.raw.thebeatlessomething);
         a5.addSong("Maxwell's Silver Hammer",R.raw.beatlessilver);
@@ -110,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         a5.addSong("Carry That Weight",R.raw.beatlesweight);
         a5.addSong("The End",R.raw.beatlesend);
         a5.addSong("Her Majesty",R.raw.beatlesmajesty);
-        Album a6 = new Album("Back To Black","Amy Winehouse",false,"@drawable/amy");
+
+        Album a6 = new Album("","Back To Black","Amy Winehouse",false,"@drawable/amy");
         a6.addSong("Rehab",R.raw.amyrehab);
         a6.addSong("You Know I'm No Good",R.raw.amynogood);
         a6.addSong("Me & Mr. Jones",R.raw.amyjones);
@@ -122,7 +132,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         a6.addSong("Some Unholy War",R.raw.amyunholywar);
         a6.addSong("He Can Only Hold Her", R.raw.amyholdher);
         a6.addSong("Addicted",R.raw.amyaddicted);
-        Album a7 = new Album("A.M.","Arctic Monkeys",false,"@drawable/arcticmonkeys");
+
+        Album a7 = new Album("","A.M.","Arctic Monkeys",false,"@drawable/arcticmonkeys");
         a7.addSong("Do I Wanna Know?",R.raw.arcticwannaknow);
         a7.addSong("R U Mine?",R.raw.arcticrumine);
         a7.addSong("One for the Road",R.raw.arcticforroad);
@@ -135,7 +146,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         a7.addSong("Snap Out of It",R.raw.arcticsnap);
         a7.addSong("Knee Socks",R.raw.arctickneesocks);
         a7.addSong("I Wanna Be Yours",R.raw.arcticwanna);
-        Album a8 = new Album("The Miseducation of Lauryn Hill","Lauryn Hill",false,"@drawable/lauryn");
+        a7.setKey(postRef.getKey());
+        postRef.setValue(a7);
+        Album a8 = new Album("","The Miseducation of Lauryn Hill","Lauryn Hill",false,"@drawable/lauryn");
         a8.addSong("Intro",R.raw.laurynintro);
         a8.addSong("Lost Ones",R.raw.laurynlostones);
         a8.addSong("Ex-Factor",R.raw.laurynexfactor);

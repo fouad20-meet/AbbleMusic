@@ -1,15 +1,19 @@
 package com.example.abblemusic;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-
+@IgnoreExtraProperties
 public class Album implements Comparable<Album>, Serializable {
+    private String key;
     private String name;
     private String artist;
     private boolean the;
     private String image;
     private ArrayList<Song> songs;
-    public Album(String name,String artist,boolean the,String image){
+    public Album(String key,String name,String artist,boolean the,String image){
+        this.key = key;
         this.artist=artist;
         this.image=image;
         this.name=name;
@@ -18,6 +22,14 @@ public class Album implements Comparable<Album>, Serializable {
     }
     public void addSong(String name,int raw){
         songs.add(new Song(name,this.artist,this.the,raw,this.image));
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getName() {

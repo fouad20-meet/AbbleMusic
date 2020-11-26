@@ -5,17 +5,20 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class User implements Serializable {
     private Bitmap image;
     private String name;
     private String email;
     private String pass;
+    private ArrayList<Song> playlist;
     public User(Bitmap image, String name, String email, String pass){
         this.image = image;
         this.name = name;
         this.email = email;
         this.pass = pass;
+        playlist = new ArrayList<Song>();
     }
 
     public User(String name, String email, String pass){
@@ -23,6 +26,11 @@ public class User implements Serializable {
         this.name = name;
         this.email = email;
         this.pass = pass;
+        playlist = new ArrayList<Song>();
+    }
+
+    public void addSong(Song song){
+        playlist.add(new Song(song.getName(),song.getArtist(),song.isThe(),song.getId(),song.getImage()));
     }
 
     @NonNull
@@ -58,13 +66,22 @@ public class User implements Serializable {
         this.pass = pass;
     }
 
+    public ArrayList<Song> getPlaylist() {
+        return playlist;
+    }
+
+    public void setPlaylist(ArrayList<Song> playlist) {
+        this.playlist = playlist;
+    }
+
     @Override
     public String toString() {
-        return "Person{" +
+        return "User{" +
                 "image=" + image +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", pass='" + pass + '\'' +
+                ", playlist=" + playlist +
                 '}';
     }
 }

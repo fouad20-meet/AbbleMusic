@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class PlaylistActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, View.OnClickListener, MediaPlayer.OnCompletionListener,PlayingFragment.PlayingFragmentListener {
+public class PlaylistActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, View.OnClickListener, MediaPlayer.OnCompletionListener, PlayingFragment.PlayingFragmentListener, SeekBar.OnSeekBarChangeListener {
     private ListView listView;//display
     private ArrayList<Song> songs;//DATA
     private ArrayAdapter<Song> arrayAdapter;//Adapter
@@ -32,7 +35,10 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
     private Song playing;
     private Button playPause,shuffle;
     private int index;
+    private SeekBar seekBar;
+    private TextView place,duration;
     private PlayingFragment fragment;
+    private Handler mHandler = new Handler();
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,26 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
         playPause=findViewById(R.id.playPause);
         playPause.setOnClickListener(this);
         shuffle = findViewById(R.id.shuffle);
+        seekBar = findViewById(R.id.seekbar);
+        seekBar.setOnSeekBarChangeListener(this);
+        place = findViewById(R.id.place);
+        duration = findViewById(R.id.duration);
+        //Make sure you update Seekbar on UI thread
+        PlaylistActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                if(player != null){
+                    int mCurrentPosition = player.getCurrentPosition() / 1000;
+                    seekBar.setProgress(mCurrentPosition);
+                    if (mCurrentPosition%60<10)
+                        place.setText(((mCurrentPosition/60))+":0"+(mCurrentPosition%60));
+                    else
+                        place.setText(((mCurrentPosition/60))+":"+(mCurrentPosition%60));
+                }
+                mHandler.postDelayed(this, 1000);
+            }
+        });
         shuffle.setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
         fragment = (PlayingFragment) getSupportFragmentManager().findFragmentById(R.id.frPlaying);
@@ -70,6 +96,13 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
         }
         playing = song;
         player = MediaPlayer.create(this,song.getId());
+        seekBar.setMax(player.getDuration()/1000);
+        if ((player.getDuration()/1000)%60<10)
+            duration.setText((player.getDuration()/1000)/60+ ":0" + (player.getDuration()/1000)%60);
+        else
+            duration.setText((player.getDuration()/1000)/60+ ":" + (player.getDuration()/1000)%60);
+        place.setText("0:00");
+        seekBar.setProgress(0);
         fragment.setSong(playing.getImage(),playing.getName());
         index = position;
         player.setOnCompletionListener(this);
@@ -103,6 +136,13 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
         if (v==playPause){
             if (playing==null) {
                 player = MediaPlayer.create(this, songs.get(0).getId());
+                seekBar.setMax(player.getDuration()/1000);
+                if ((player.getDuration()/1000)%60<10)
+                    duration.setText((player.getDuration()/1000)/60+ ":0" + (player.getDuration()/1000)%60);
+                else
+                    duration.setText((player.getDuration()/1000)/60+ ":" + (player.getDuration()/1000)%60);
+                place.setText("0:00");
+                seekBar.setProgress(0);
                 index = 0;
                 player.setOnCompletionListener(this);
                 player.start();
@@ -128,6 +168,13 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
             if (playing!=null)
                 stopPlayer(playing);
             player = MediaPlayer.create(this,songs.get(order).getId());
+            seekBar.setMax(player.getDuration()/1000);
+            if ((player.getDuration()/1000)%60<10)
+                duration.setText((player.getDuration()/1000)/60+ ":0" + (player.getDuration()/1000)%60);
+            else
+                duration.setText((player.getDuration()/1000)/60+ ":" + (player.getDuration()/1000)%60);
+            place.setText("0:00");
+            seekBar.setProgress(0);
             index = order;
             player.setOnCompletionListener(this);
             player.start();
@@ -172,18 +219,36 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
         if (index<songs.size()-1) {
             Song song = songs.get(index + 1);
             player = MediaPlayer.create(this, song.getId());
+            seekBar.setMax(player.getDuration()/1000);
+            if ((player.getDuration()/1000)%60<10)
+                duration.setText((player.getDuration()/1000)/60+ ":0" + (player.getDuration()/1000)%60);
+            else
+                duration.setText((player.getDuration()/1000)/60+ ":" + (player.getDuration()/1000)%60);
+            place.setText("0:00");
+            seekBar.setProgress(0);
             index++;
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            fragment.changeIcon(true);
+            playPause.setText("Pause");
         }
         else {
             Song song = songs.get(0);
             player = MediaPlayer.create(this, song.getId());
+            seekBar.setMax(player.getDuration()/1000);
+            if ((player.getDuration()/1000)%60<10)
+                duration.setText((player.getDuration()/1000)/60+ ":0" + (player.getDuration()/1000)%60);
+            else
+                duration.setText((player.getDuration()/1000)/60+ ":" + (player.getDuration()/1000)%60);
+            place.setText("0:00");
+            seekBar.setProgress(0);
             index=0;
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            fragment.changeIcon(true);
+            playPause.setText("Pause");
         }
     }
 
@@ -194,20 +259,37 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
             index++;
             Song song = songs.get(index);
             player = MediaPlayer.create(this, song.getId());
+            seekBar.setMax(player.getDuration()/1000);
+            if ((player.getDuration()/1000)%60<10)
+                duration.setText((player.getDuration()/1000)/60+ ":0" + (player.getDuration()/1000)%60);
+            else
+                duration.setText((player.getDuration()/1000)/60+ ":" + (player.getDuration()/1000)%60);
+            place.setText("0:00");
+            seekBar.setProgress(0);
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
-            player.start();
+            fragment.changeIcon(true);
+            playPause.setText("Pause");
         }
         else {
             if (playing!=null)
                 stopPlayer(playing);
             Song song = songs.get(0);
             player = MediaPlayer.create(this, song.getId());
+            seekBar.setMax(player.getDuration()/1000);
+            if ((player.getDuration()/1000)%60<10)
+                duration.setText((player.getDuration()/1000)/60+ ":0" + (player.getDuration()/1000)%60);
+            else
+                duration.setText((player.getDuration()/1000)/60+ ":" + (player.getDuration()/1000)%60);
+            place.setText("0:00");
+            seekBar.setProgress(0);
             index=0;
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            fragment.changeIcon(true);
+            playPause.setText("Pause");
         }
     }
 
@@ -218,25 +300,50 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
             index--;
             Song song = songs.get(index);
             player = MediaPlayer.create(this, song.getId());
+            seekBar.setMax(player.getDuration()/1000);
+            if ((player.getDuration()/1000)%60<10)
+                duration.setText((player.getDuration()/1000)/60+ ":0" + (player.getDuration()/1000)%60);
+            else
+                duration.setText((player.getDuration()/1000)/60+ ":" + (player.getDuration()/1000)%60);
+            place.setText("0:00");
+            seekBar.setProgress(0);
             playing = song;
             player.start();
             fragment.setSong(playing.getImage(),playing.getName());
+            fragment.changeIcon(true);
+            playPause.setText("Pause");
         }
         else {
             if (playing!=null)
                 stopPlayer(playing);
             Song song = songs.get(songs.size()-1);
             player = MediaPlayer.create(this, song.getId());
+            seekBar.setMax(player.getDuration()/1000);
+            if ((player.getDuration()/1000)%60<10)
+                duration.setText((player.getDuration()/1000)/60+ ":0" + (player.getDuration()/1000)%60);
+            else
+                duration.setText((player.getDuration()/1000)/60+ ":" + (player.getDuration()/1000)%60);
+            place.setText("0:00");
+            seekBar.setProgress(0);
             index=songs.size()-1;
             playing = song;
             player.start();
             fragment.setSong(playing.getImage(),playing.getName());
+            fragment.changeIcon(true);
+            playPause.setText("Pause");
         }
     }
 
     public void playPause(){
         if (playing==null) {
             player = MediaPlayer.create(this, songs.get(0).getId());
+            seekBar.setMax(player.getDuration()/1000);
+            if ((player.getDuration()/1000)%60<10)
+                duration.setText((player.getDuration()/1000)/60+ ":0" + (player.getDuration()/1000)%60);
+            else
+                duration.setText((player.getDuration()/1000)/60+ ":" + (player.getDuration()/1000)%60);
+            place.setText("0:00");
+            seekBar.setProgress(0);
             index = 0;
             player.setOnCompletionListener(this);
             player.start();
@@ -255,5 +362,22 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
             playPause.setText("Pause");
             fragment.changeIcon(true);
         }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if(player != null && fromUser){
+            player.seekTo(progress * 1000);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }
