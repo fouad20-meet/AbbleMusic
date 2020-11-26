@@ -4,16 +4,22 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-
+@IgnoreExtraProperties
 public class User implements Serializable {
+    private String key;
     private Bitmap image;
     private String name;
     private String email;
     private String pass;
     private ArrayList<Song> playlist;
-    public User(Bitmap image, String name, String email, String pass){
+    public User(String key,Bitmap image, String name, String email, String pass){
+        this.key = key;
         this.image = image;
         this.name = name;
         this.email = email;
@@ -21,7 +27,8 @@ public class User implements Serializable {
         playlist = new ArrayList<Song>();
     }
 
-    public User(String name, String email, String pass){
+    public User(String key,String name, String email, String pass){
+        this.key = key;
         this.image = null;
         this.name = name;
         this.email = email;
@@ -31,6 +38,14 @@ public class User implements Serializable {
 
     public void addSong(Song song){
         playlist.add(new Song(song.getName(),song.getArtist(),song.isThe(),song.getId(),song.getImage()));
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     @NonNull

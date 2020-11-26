@@ -20,14 +20,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ConfirmActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText etCode;
     private Button confirm;
     private Dialog d;
-    private String code,email,pass;
+    private String code,email,pass,name;
     private TextView tv;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference userRef;
     private FirebaseAuth mAuth;
 
     @Override
@@ -38,6 +42,8 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
         confirm = findViewById(R.id.confirm);
         confirm.setOnClickListener(this);
         Intent intent = getIntent();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        name = intent.getStringExtra("name");
         email = intent.getStringExtra("email");
         pass = intent.getStringExtra("pass");
         code = intent.getStringExtra("code");
@@ -56,6 +62,11 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
                             // Sign in success, update UI with the signed-in user's information
                             Toast.makeText(ConfirmActivity.this, "Authentication worked.",
                                     Toast.LENGTH_SHORT).show();
+                            signIn(email,pass);
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
+                            User user = new User(uid,name,email,pass);
+                            userRef=firebaseDatabase.getReference("Users").push();
+                            userRef.setValue(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(ConfirmActivity.this, "Authentication failed.",
@@ -102,6 +113,16 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
         dialog.show();
     }
 
+    public void signIn(String email,String pass){
+        mAuth.signInWithEmailAndPassword(email, pass)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        // ...
+                    }
+                });
+    }
+
     @Override
     public void onClick(View v) {
         if (v == confirm){
@@ -112,8 +133,6 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
             }
             else {
                 Toast.makeText(this,"Code Incorrect",Toast.LENGTH_LONG).show();
-                
-                
 
             }
         }

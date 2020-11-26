@@ -116,6 +116,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                         //Executing sendmail to send email
                         sm.execute();
                         Intent intent = new Intent(this, ConfirmActivity.class);
+                        intent.putExtra("name",name.getText().toString());
                         intent.putExtra("email", suEmail.getText().toString());
                         intent.putExtra("pass", suPass.getText().toString());
                         intent.putExtra("code", code);
