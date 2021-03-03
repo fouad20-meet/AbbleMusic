@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "117704132801",
+    "firebase_url": "https://abblemusic.firebaseio.com",
+    "project_id": "abblemusic",
+    "storage_bucket": "abblemusic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117704132801:android:f9a239fd7fb83d41f5ac40",
+        "android_client_info": {
+          "package_name": "com.example.abblemusic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "117704132801-ochaivue8cqcauovl1sthudafdjejicb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGt8nN3sm1qdgonqQsqcK7jPIqrjrvXUo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "117704132801-ochaivue8cqcauovl1sthudafdjejicb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
