@@ -108,7 +108,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                             code += rnd;
                         }
                         d.dismiss();
-                        String email = suEmail.getText().toString().trim();
+                        String email = suEmail.getText().toString();
                         String subject = "Please Confirm Your Email - Abble Music";
                         String message = code;
                         //Creating SendMail object

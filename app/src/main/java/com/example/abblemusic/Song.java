@@ -7,13 +7,24 @@ public class Song implements Comparable<Song>, Serializable {
     private String artist;
     private boolean the;
     private int id;
+    private String key;
     private String image;
+    public Song(){
+    }
     public Song(String name,String artist,boolean the,int id,String image){
         this.name=name;
         this.artist=artist;
         this.the=the;
         this.id=id;
         this.image=image;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public boolean isThe() {

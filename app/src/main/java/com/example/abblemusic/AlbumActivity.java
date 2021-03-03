@@ -22,8 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -44,6 +47,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
     private Song playing;
     private Button playPause,shuffle;
     private Album album;
+    private User user;
     private int index;
     private SeekBar seekBar;
     private ImageButton prev,next;
@@ -51,6 +55,7 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
     private PlayingFragment fragment;
     private Handler mHandler = new Handler();
     private FirebaseAuth mAuth;
+    private DatabaseReference database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,10 +76,24 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
         name.setText(album.getName());
         artist = findViewById(R.id.albumartist);
         artist.setText(album.getArtist());
+        mAuth = FirebaseAuth.getInstance();
+        database=FirebaseDatabase.getInstance().getReference("Users/"+mAuth.getUid()+"/PlayList");
+        /*database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                user = snapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });*/
         listView = findViewById(R.id.listViewsongs);
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
         songs = album.getSongs();
+
         Collections.sort(songs);
         arrayAdapter = new AlbumSongsArrayAdapter(this,R.layout.custum_album_row, songs);
         listView.setAdapter(arrayAdapter);
@@ -106,7 +125,6 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
                 mHandler.postDelayed(this, 1000);
             }
         });
-        mAuth = FirebaseAuth.getInstance();
         fragment = (PlayingFragment) getSupportFragmentManager().findFragmentById(R.id.TODO);
     }
 
@@ -152,9 +170,8 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Song song = (Song)listView.getItemAtPosition(position);
-        if (song == playing){
-            stopPlayer(song);
-        }
+        database.push().setValue(song);
+        Toast.makeText(this,"New Song Added",Toast.LENGTH_LONG).show();
         return true;
     }
 
@@ -402,5 +419,11 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        stopPlayer(playing);
+        super.onBackPressed();
     }
 }

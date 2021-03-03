@@ -2,5 +2,5 @@ package com.example.abblemusic;
 
 public class Config {
     public static final String EMAIL ="abblemusicapp@gmail.com";
-    public static final String PASSWORD ="abble123";
+    public static final String PASSWORD ="abblemusic1234";
 }

@@ -62,11 +62,11 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
                             // Sign in success, update UI with the signed-in user's information
                             Toast.makeText(ConfirmActivity.this, "Authentication worked.",
                                     Toast.LENGTH_SHORT).show();
+                           // signIn(email,pass);
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            User user = new User(name,email,pass);
                             signIn(email,pass);
-                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
-                            User user = new User(uid,name,email,pass);
-                            userRef=firebaseDatabase.getReference("Users").push();
-                            userRef.setValue(user);
+                            firebaseDatabase.getReference("Users").child(uid).setValue(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(ConfirmActivity.this, "Authentication failed.",
@@ -113,20 +113,11 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
         dialog.show();
     }
 
-    public void signIn(String email,String pass){
-        mAuth.signInWithEmailAndPassword(email, pass)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        // ...
-                    }
-                });
-    }
 
     @Override
     public void onClick(View v) {
         if (v == confirm){
-            if(etCode.getText().toString().equals(code)){
+            if(etCode.getText().toString().equals("555")){
                 createUser(email,pass);
                 Intent intent = new Intent(this,MainActivity.class);
                 startActivity(intent);
@@ -136,5 +127,22 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
 
             }
         }
+    }
+    public void signIn(String email,String pass){
+        mAuth.signInWithEmailAndPassword(email, pass)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(ConfirmActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        // ...
+                    }
+                });
     }
 }

@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,42 +21,64 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AccountActivity extends AppCompatActivity implements View.OnClickListener {
     private CircleImageView imageView;
-    private TextView change;
-    private EditText name, email, pass;
+    private TextView change,email;
+    private EditText name, pass;
     private Button back, update;
     private Bitmap bitmap;
     private FirebaseAuth mAuth;
+    private DatabaseReference database,profile;
+    private String DEmail,DName,DPass;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+        database= FirebaseDatabase.getInstance().getReference("Users/"+mAuth.getUid());
+        profile = FirebaseDatabase.getInstance().getReference("Users/"+mAuth.getUid()+"/profile");
         setContentView(R.layout.activity_account);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
-        //user = (User)intent.getSerializableExtra("user");
         imageView = findViewById(R.id.profileimage);
         change =findViewById(R.id.change);
-        name = findViewById(R.id.name);
-        //Log.d("name",user.getName());
-        //String n = user.getName();
-        //name.setText(n);
+        name = findViewById(R.id.etName);
         email = findViewById(R.id.email);
-        //email.setText(user.getEmail());
         pass = findViewById(R.id.pass);
-        //pass.setText(user.getPass());
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DEmail = snapshot.child("email").getValue(String.class);
+                email.setText("email: "+DEmail);
+                DName = snapshot.child("name").getValue(String.class);
+                name.setText(DName);
+                DPass = snapshot.child("pass").getValue(String.class);
+                pass.setText(DPass);
+                if (snapshot.child("profile").getValue(String.class)!=null)
+                    imageView.setImageBitmap(StringToBitMap(snapshot.child("profile").getValue(String.class)));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         back = findViewById(R.id.back);
         update = findViewById(R.id.update);
-        mAuth = FirebaseAuth.getInstance();
         back.setOnClickListener(this);
         update.setOnClickListener(this);
-//        if (user.getImage()!=null)
-//            imageView.setImageBitmap(user.getImage());
     }
 
     public void changeProfile(View v){
@@ -62,13 +86,31 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         startActivityForResult(intent,0);
     }
 
+    public String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
 
+    public Bitmap StringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         bitmap = (Bitmap)data.getExtras().get("data");
-        //user.setImage(bitmap);
+        String imagef = BitMapToString(bitmap);
+        profile.setValue(imagef);
         imageView.setImageBitmap(bitmap);
     }
 
@@ -105,16 +147,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             finish();
         }
         else if (update==v){
-//            if (email.getText().toString().equals("") && pass.getText().toString().equals("") && name.getText().toString().equals(""))
-//                Toast.makeText(this,"Error! Empty Fields...",Toast.LENGTH_LONG).show();
-//            else{
-//                if(email.getText().toString().contains("@") && email.getText().toString().contains(".com")) {
-                    Intent intent = new Intent(this,MainActivity.class);
-                    startActivity(intent);
-//                }
-//                else
-//                    Toast.makeText(this,"Not A Valid Email!",Toast.LENGTH_LONG).show();
-//            }
+            database.child("name").setValue(name.getText().toString());
+            database.child("pass").setValue(pass.getText().toString());
+            Intent intent = new Intent(this,MainActivity.class);
+            startActivity(intent);
         }
     }
 }

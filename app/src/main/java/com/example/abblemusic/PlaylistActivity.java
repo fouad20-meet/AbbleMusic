@@ -23,6 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +45,7 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
     private PlayingFragment fragment;
     private Handler mHandler = new Handler();
     private FirebaseAuth mAuth;
+    private DatabaseReference database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,18 +54,26 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
         songs = new ArrayList<Song>();
-        songs.add(new Song("Killing Me Softly With His Song","Fugees",true,R.raw.fugees,"@drawable/fugees"));
-        songs.add(new Song("Tears Dry On Their Own","Amy Winehouse",false,R.raw.amytearsdry,"@drawable/amy"));
-        songs.add(new Song("The Man Who Sold the World","Nirvana",false,R.raw.nirvanasoldworld,"@drawable/nirvana"));
-        songs.add(new Song("Maybe","Janis Joplin",false,R.raw.janismaybe,"@drawable/janis"));
-        songs.add(new Song("No. 1 Party Anthem","Arctic Monkeys",false, R.raw.arcticno1,"@drawable/arcticmonkeys"));
-        songs.add(new Song("Something","Beatles",true,R.raw.thebeatlessomething,"@drawable/beatles"));
-        songs.add(new Song("Can't Take My Eyes Off of You","Lauryn Hill",false,R.raw.lauryneyesoffyou,"@drawable/lauryn"));
-        songs.add(new Song("Time","Pink Floyd",false,R.raw.pinktime,"@drawable/pinkfloyd"));
-        songs.add(new Song("Fu-gee-la","Fugees",true,R.raw.fugeesfugeela,"@drawable/fugees"));
-        Collections.sort(songs);
-        arrayAdapter = new SongArrayAdapter(this,R.layout.custom_row, songs);
-        listView.setAdapter(arrayAdapter);
+        mAuth = FirebaseAuth.getInstance();
+        database= FirebaseDatabase.getInstance().getReference("Users/"+mAuth.getUid()+"/PlayList");
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot data:snapshot.getChildren()){
+                    Song song=data.getValue(Song.class);
+                    song.setKey(data.getKey());
+                    songs.add(song);
+                }
+                Collections.sort(songs);
+                arrayAdapter = new SongArrayAdapter(PlaylistActivity.this,R.layout.custom_row, songs);
+                listView.setAdapter(arrayAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         playPause=findViewById(R.id.playPause);
         playPause.setOnClickListener(this);
         shuffle = findViewById(R.id.shuffle);
@@ -84,7 +98,6 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
             }
         });
         shuffle.setOnClickListener(this);
-        mAuth = FirebaseAuth.getInstance();
         fragment = (PlayingFragment) getSupportFragmentManager().findFragmentById(R.id.frPlaying);
     }
 
@@ -114,9 +127,11 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Song song = (Song)listView.getItemAtPosition(position);
-        if (song == playing){
-            stopPlayer(song);
-        }
+        mAuth = FirebaseAuth.getInstance();
+        DatabaseReference df = FirebaseDatabase.getInstance().getReference("Users/"+mAuth.getUid()+"/PlayList/"+song.getKey());
+        df.removeValue();
+        songs.clear();
+        arrayAdapter.notifyDataSetChanged();
         return true;
     }
 
@@ -379,5 +394,11 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        stopPlayer(playing);
+        super.onBackPressed();
     }
 }
