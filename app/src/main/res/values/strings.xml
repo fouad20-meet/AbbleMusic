@@ -3,4 +3,6 @@
     <string name="don_t_have_an_account_sign_up">Don\'t Have an Account? Sign Up</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="channel_name">abble_music_notification_channel</string>
+    <string name="channel_description">Reminder</string>
 </resources>

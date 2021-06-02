@@ -3,11 +3,15 @@ package com.example.abblemusic;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -65,6 +69,10 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
                             User user = new User(name,email,pass);
                             signIn(email,pass);
                             firebaseDatabase.getReference("Users").child(uid).setValue(user);
+                            Intent notification = new Intent(ConfirmActivity.this, MyReceiver.class);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(ConfirmActivity.this, 1, notification, PendingIntent.FLAG_UPDATE_CURRENT);
+                            AlarmManager alarmManager = (AlarmManager) ConfirmActivity.this.getSystemService(Context.ALARM_SERVICE);
+                            alarmManager.setRepeating(AlarmManager.RTC, (System.currentTimeMillis()+(1000)), 1000 * 60 * 60 * 24, pendingIntent);
                             Intent intentS = new Intent(ConfirmActivity.this,IntentService.class);
                             startService(intentS);
                         } else {

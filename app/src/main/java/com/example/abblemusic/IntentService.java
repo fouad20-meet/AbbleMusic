@@ -10,8 +10,12 @@ import android.os.Build;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 public class IntentService extends android.app.IntentService{
+    private static final String CHANNEL_ID = "CHANNEL_3";
+    private static final int REQUEST_CODE = 1;
+    private static final int NOTIFICATION_ID = 1;
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
@@ -24,39 +28,41 @@ public class IntentService extends android.app.IntentService{
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         //phase 1
-        int icon = R.drawable.musicicon;
-        long when = System.currentTimeMillis();
-        String title = "Welcome to Abble Music";
-        String text="Thank you for signing up for Abble Music. Hope you enjoy making playlist and listening to music!";
+        createNotificationChannel();
+        Notification.Builder nBuilder= new Notification.Builder(this);
+        nBuilder.setSmallIcon(R.drawable.musicicon);
+        nBuilder.setContentTitle("Come stream songs on Abble Music!");
+        nBuilder.setContentText("This is your daily reminder to listen to your favorite songs.");
 
 
 
-
-        //phase 2
+// what to do when the notification is clicked
         Intent intent1 = new Intent(this, MainActivity.class);
-        intent1.putExtra("key", "Uzi oranim");
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent1, 0);
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "M_CH_ID");
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        // connects the pending intent with the notification object,
+        //when the user clicks on the notification the pending intent is called
+        nBuilder.setContentIntent(pendingIntent);
 
-        //required from android 8 and above
-        setChannel(notificationManager,builder);
+        nBuilder.setChannelId(CHANNEL_ID);
 
-        //phase 3
-        Notification notification = builder.setContentIntent(pendingIntent)
-                .setSmallIcon(icon).setWhen(when)
-                .setAutoCancel(true).setContentTitle(title)
-                .setContentText(text).build();
-        notificationManager.notify(1, notification);
-
+        Notification notification = nBuilder.build();
+        NotificationManagerCompat managerCompat= NotificationManagerCompat.from(this);
+        managerCompat.notify(NOTIFICATION_ID, notification);
 
     }
-    public void setChannel(NotificationManager notificationManager,NotificationCompat.Builder builder){
-        String channelId = "YOUR_CHANNEL_ID";
-        NotificationChannel channel = new NotificationChannel(channelId,
-                "Channel human readable title",
-                NotificationManager.IMPORTANCE_DEFAULT);
-        notificationManager.createNotificationChannel(channel);
-        builder.setChannelId(channelId);
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
