@@ -108,10 +108,12 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        bitmap = (Bitmap)data.getExtras().get("data");
-        String imagef = BitMapToString(bitmap);
-        profile.setValue(imagef);
-        imageView.setImageBitmap(bitmap);
+        if(resultCode == RESULT_OK) {
+            bitmap = (Bitmap) data.getExtras().get("data");
+            String imagef = BitMapToString(bitmap);
+            profile.setValue(imagef);
+            imageView.setImageBitmap(bitmap);
+        }
     }
 
     @Override

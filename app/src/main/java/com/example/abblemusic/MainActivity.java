@@ -28,12 +28,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
-    private User user;
     private Button playlist;
     private GridView gridView;//display
     private ArrayList<Album> albums;//DATA
     private ArrayAdapter<Album> arrayAdapter;//Adapter
-    private MediaPlayer player;
     private FirebaseAuth mAuth;
     private DatabaseReference database;
     @Override

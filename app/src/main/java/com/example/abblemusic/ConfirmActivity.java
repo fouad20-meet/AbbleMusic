@@ -27,11 +27,9 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
 
     private EditText etCode;
     private Button confirm;
-    private Dialog d;
     private String code,email,pass,name;
     private TextView tv;
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference userRef;
     private FirebaseAuth mAuth;
 
     @Override
@@ -67,6 +65,8 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
                             User user = new User(name,email,pass);
                             signIn(email,pass);
                             firebaseDatabase.getReference("Users").child(uid).setValue(user);
+                            Intent intentS = new Intent(ConfirmActivity.this,IntentService.class);
+                            startService(intentS);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(ConfirmActivity.this, "Authentication failed.",

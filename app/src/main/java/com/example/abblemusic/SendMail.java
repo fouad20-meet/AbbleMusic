@@ -3,6 +3,7 @@ package com.example.abblemusic;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Properties;
@@ -19,7 +20,6 @@ import javax.mail.internet.MimeMessage;
  * Created by Belal on 10/30/2015.
  */
 
-//Class is extending AsyncTask because this class is going to perform a networking operation
 public class SendMail extends AsyncTask<Void,Void,Void> {
 
     private Context context;
@@ -76,6 +76,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
                 new javax.mail.Authenticator() {
                     //Authenticating the password
                     protected PasswordAuthentication getPasswordAuthentication() {
+                        Log.d("fouad","email");
                         return new PasswordAuthentication(Config.EMAIL, Config.PASSWORD);
                     }
                 });
@@ -83,7 +84,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
         try {
             //Creating MimeMessage object
             MimeMessage mm = new MimeMessage(session);
-
+            Log.d("fouad","email");
             //Setting sender address
             mm.setFrom(new InternetAddress(Config.EMAIL));
             //Adding receiver

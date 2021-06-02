@@ -268,7 +268,7 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
     }
 
     public void next(){
-        if (index<songs.size()){
+        if (index<(songs.size()-2)){
             if (playing!=null)
                 stopPlayer(playing);
             index++;
@@ -284,8 +284,8 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
-            fragment.changeIcon(true);
-            playPause.setText("Pause");
+            fragment.changeIcon(false);
+            playPause.setText("Play");
         }
         else {
             if (playing!=null)
@@ -303,8 +303,8 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
-            fragment.changeIcon(true);
-            playPause.setText("Pause");
+            fragment.changeIcon(false);
+            playPause.setText("Play");
         }
     }
 

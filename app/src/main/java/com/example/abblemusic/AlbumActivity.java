@@ -47,10 +47,8 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
     private Song playing;
     private Button playPause,shuffle;
     private Album album;
-    private User user;
     private int index;
     private SeekBar seekBar;
-    private ImageButton prev,next;
     private TextView place,duration;
     private PlayingFragment fragment;
     private Handler mHandler = new Handler();
@@ -101,10 +99,6 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
         playPause.setOnClickListener(this);
         shuffle = findViewById(R.id.shufflealbum);
         shuffle.setOnClickListener(this);
-        prev = findViewById(R.id.prevalbum);
-        prev.setOnClickListener(this);
-        next = findViewById(R.id.nextalbum);
-        next.setOnClickListener(this);
         seekBar = findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(this);
         place = findViewById(R.id.placement);

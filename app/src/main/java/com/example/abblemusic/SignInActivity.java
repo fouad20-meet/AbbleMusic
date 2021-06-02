@@ -29,11 +29,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private EditText siEmail,siPass,suEmail,suPass,name;
     private Button signin,signup;
     private SharedPreferences sp;
-    private Dialog d,confirm;
-    private TextView createAccount;
+    private Dialog d;
     private CheckBox save;
-    private CircleImageView imageView;
-    private User user;
     private String code;
     private FirebaseAuth mAuth;
     @Override
@@ -43,9 +40,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         siEmail = findViewById(R.id.etEmail);
         siPass = findViewById(R.id.etPass);
         signin = findViewById(R.id.signin);
-        createAccount = findViewById(R.id.tvSignin);
         save = findViewById(R.id.save);
-        imageView = findViewById(R.id.profile_image);
         sp = getApplicationContext().getSharedPreferences("sp",0);
         String email = sp.getString("email",null);
         String pass = sp.getString("pass",null);
@@ -108,11 +103,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                             code += rnd;
                         }
                         d.dismiss();
-                        String email = suEmail.getText().toString();
+                        String email = suEmail.getText().toString().trim();
                         String subject = "Please Confirm Your Email - Abble Music";
                         String message = code;
                         //Creating SendMail object
                         SendMail sm = new SendMail(this, email, subject, message);
+
                         //Executing sendmail to send email
                         sm.execute();
                         Intent intent = new Intent(this, ConfirmActivity.class);
