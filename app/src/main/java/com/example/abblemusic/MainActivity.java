@@ -3,6 +3,9 @@ package com.example.abblemusic;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         playlist.setOnClickListener(this);
         gridView = findViewById(R.id.simpleGridView);
         gridView.setOnItemClickListener(this);
+
         database=FirebaseDatabase.getInstance().getReference("Albums");
         database.addValueEventListener(new ValueEventListener() {
             @Override

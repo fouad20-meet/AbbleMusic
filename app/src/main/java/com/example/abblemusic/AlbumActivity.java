@@ -242,6 +242,8 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            playPause.setText("Pause");
+            fragment.changeIcon(true);
         }
         else {
             Song song = songs.get(0);
@@ -257,6 +259,8 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            playPause.setText("Pause");
+            fragment.changeIcon(true);
         }
     }
 
@@ -306,6 +310,8 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            playPause.setText("Pause");
+            fragment.changeIcon(true);
         }
         else {
             if (playing!=null)
@@ -323,6 +329,8 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            playPause.setText("Pause");
+            fragment.changeIcon(true);
         }
     }
 
@@ -344,6 +352,8 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            playPause.setText("Pause");
+            fragment.changeIcon(true);
         }
         else {
             if (playing!=null)
@@ -361,6 +371,8 @@ public class AlbumActivity extends AppCompatActivity implements AdapterView.OnIt
             playing = song;
             fragment.setSong(playing.getImage(),playing.getName());
             player.start();
+            playPause.setText("Pause");
+            fragment.changeIcon(true);
         }
     }
 

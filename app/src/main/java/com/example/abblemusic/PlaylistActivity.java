@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -67,6 +70,14 @@ public class PlaylistActivity extends AppCompatActivity implements AdapterView.O
                 Collections.sort(songs);
                 arrayAdapter = new SongArrayAdapter(PlaylistActivity.this,R.layout.custom_row, songs);
                 listView.setAdapter(arrayAdapter);
+                if(songs.isEmpty()){
+                    Intent notification = new Intent(PlaylistActivity.this, MyReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(PlaylistActivity.this, 1, notification, PendingIntent.FLAG_UPDATE_CURRENT);
+                    AlarmManager alarmManager = (AlarmManager) PlaylistActivity.this.getSystemService(Context.ALARM_SERVICE);
+                    alarmManager.setRepeating(AlarmManager.RTC, (System.currentTimeMillis()+(1000)), 1000 * 60 * 60 * 24, pendingIntent);
+                    Intent intentS = new Intent(PlaylistActivity.this,IntentService.class);
+                    startService(intentS);
+                }
             }
 
             @Override

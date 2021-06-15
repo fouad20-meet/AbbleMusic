@@ -67,14 +67,11 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
                            // signIn(email,pass);
                             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                             User user = new User(name,email,pass);
-                            signIn(email,pass);
+                          //  signIn(email,pass);
                             firebaseDatabase.getReference("Users").child(uid).setValue(user);
-                            Intent notification = new Intent(ConfirmActivity.this, MyReceiver.class);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(ConfirmActivity.this, 1, notification, PendingIntent.FLAG_UPDATE_CURRENT);
-                            AlarmManager alarmManager = (AlarmManager) ConfirmActivity.this.getSystemService(Context.ALARM_SERVICE);
-                            alarmManager.setRepeating(AlarmManager.RTC, (System.currentTimeMillis()+(1000)), 1000 * 60 * 60 * 24, pendingIntent);
-                            Intent intentS = new Intent(ConfirmActivity.this,IntentService.class);
-                            startService(intentS);
+
+                            Intent intent = new Intent(ConfirmActivity.this,MainActivity.class);
+                            startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(ConfirmActivity.this, "Authentication failed.",
@@ -127,8 +124,7 @@ public class ConfirmActivity extends AppCompatActivity implements View.OnClickLi
         if (v == confirm){
             if(etCode.getText().toString().equals("555")){
                 createUser(email,pass);
-                Intent intent = new Intent(this,MainActivity.class);
-                startActivity(intent);
+
             }
             else {
                 Toast.makeText(this,"Code Incorrect",Toast.LENGTH_LONG).show();
